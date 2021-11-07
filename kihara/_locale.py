@@ -19,7 +19,7 @@ Outils :
         Restaurer des fichiers chachés
 
     kihara-index (ou python3 -m kihara.index)
-        Opération sur les fichier d'indexage (.kri)
+        Afficher le contenu de fichiers d'indexage (.kri)
 
     kihara-link (ou python3 -m kihara.link)
         Opérations sur les liens kihara
@@ -35,6 +35,15 @@ Utilisation :
 ''',
         'INVALID_URL': 'URL non valide',
 		'INVALID_LINK': 'lien non valide',
+        'INDEX_MODULE_HELP': '''[Aide pour le module index]
+
+Utilisation :
+    kihara-index <lien>
+        Récupérer les informations depuis un lien
+
+    kihara-index local <chemin>
+        Afficher les informations d'un fichier local
+''',
 	}
 else:
 	TEXT = {
@@ -51,7 +60,7 @@ Tools :
         Recover hidden files
 
     kihara-index (or python3 -m kihara.index)
-        Indexing files (.kri) manipulation
+        Display indexing files (.kri) data
 
     kihara-link (or python3 -m kihara.link)
         Kihara links manipulation
@@ -67,6 +76,15 @@ Usage :
 ''',
         'INVALID_URL': 'not a valid URL',
 		'INVALID_LINK': 'not a valid link',
+        'INDEX_MODULE_HELP': '''[Help on the index module]
+
+Usage :
+    kihara-index <link>
+        Display infos from a link
+
+    kihara-index local <path>
+        Display info from a local file
+''',
 	}
 
 del locale, userlocale
