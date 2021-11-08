@@ -7,8 +7,8 @@ from . import utils
 
 class KRIParsingError (SyntaxError): pass
 
-KRI_BRANCH_TAG = re.compile(r'(\?)(resource|version|location)(\[)')
-KRI_LEAF_TAG = re.compile(r'(\?)(name|size|date|type|description|provider|fragment)(\[)')
+KRI_BRANCH_TAG = re.compile(r'(\?)([a-z]+)(\[)')
+KRI_LEAF_TAG = re.compile(r'(\!)([a-z]+)(\[)')
 
 def main():
 	argc = len(argv)
