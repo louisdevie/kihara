@@ -1,22 +1,29 @@
-from sys import argv, stdout
 import re
+import requests
+import os
+from sys import argv, stdout
+from datetime import datetime
 
 from . import _locale
-from .version import REPR
+from . import _cachedir
 from . import utils
+from .version import REPR
+from .link import get_url
 
 class KRIParsingError (SyntaxError): pass
 
 KRI_BRANCH_TAG = re.compile(r'(\?)(resource|version|location)(\[)')
-KRI_LEAF_TAG = re.compile(r'(\?)(name|size|date|type|description|provider|fragment)(\[)')
+KRI_LEAF_TAG = re.compile(r'(!)(name|size|date|type|description|provider|fragment)(\[)')
 
 def main():
 	argc = len(argv)
 	if argc == 2:
-		print(argv[1])
+		display_index(parse_index(load_remote_index(argv[1])))
 	elif argc == 3:
 		if argv[1] == 'local':
 			display_index(parse_index(load_local_index(argv[2])))
+		elif argv[21] == 'no-cache':
+			display_index(parse_index(load_remote_index(argv[2], False)))
 		else:
 			_help_msg()
 	else:
@@ -26,17 +33,84 @@ def _help_msg():
 	print(f'kihara v{REPR}')
 	print(_locale.INDEX_MODULE_HELP)
 
-def display_index(index_data, indent=''):
-	if isinstance(index_data, dict):
-		for key, value in index_data.items():
-			print(indent+key+':')
-			display_index(value, indent+'  ')
-	elif isinstance(index_data, list):
-		for index, value in enumerate(index_data):
-			print(indent+str(index+1)+':')
-			display_index(value, indent+'  ')
-	else:
-		print(indent+repr(index_data))
+def display_index(index_data):
+	print(_locale.INDEX_INFO)
+
+	if not 'resource' in index_data:
+		printfield(_locale.INDEX_NO_RESOURCE)
+		return
+	res = index_data.get('resource')[0]
+
+	printfield(
+		res.get('name',	[_locale.INDEX_UNKNOWN_FIELD])[0],
+		_locale.INDEX_NAME  )
+	printfield(
+		res.get('description', [_locale.INDEX_UNKNOWN_FIELD])[0],
+		_locale.INDEX_DESCRIPTION  )
+	printfield(
+		res.get('provider', [_locale.INDEX_UNKNOWN_FIELD])[0],
+		_locale.INDEX_RESOURCE_PROVIDER  )
+
+	for i, ver in enumerate(res.get('version', [])):
+		printfield(
+			'',
+			_locale.INDEX_VERSION.format(i+1)  )
+		printfield(
+			ver.get('name', [_locale.INDEX_UNKNOWN_FIELD])[0],
+			_locale.INDEX_NAME, 2)
+		printfield(
+			ver.get('description', [_locale.INDEX_UNKNOWN_FIELD])[0],
+			_locale.INDEX_DESCRIPTION, 2)
+		printfield(
+			humanize_file_size(ver.get('size', [_locale.INDEX_UNKNOWN_FIELD])[0]),
+			_locale.INDEX_SIZE, 2)
+		for i, loc in enumerate(ver.get('location', [])):
+			printfield(
+				'',
+				_locale.INDEX_LOCATION.format(i+1), 2)
+			printfield(
+				type_name(loc.get('type', [_locale.INDEX_UNKNOWN_FIELD])[0]),
+				_locale.INDEX_TYPE, 3)
+			printfield(
+				res.get('provider', [_locale.INDEX_UNKNOWN_FIELD])[0],
+				_locale.INDEX_LOCATION_PROVIDER, 3)
+			printfield(
+				loc.get('date', [_locale.INDEX_UNKNOWN_FIELD])[0],
+				_locale.INDEX_DATE, 3)
+			for i, frag in enumerate(loc.get('fragment', [])):
+				printfield(
+					frag,
+					_locale.INDEX_FRAGMENT.format(i+1), 3)
+
+def printfield(value, name='', indent=1):
+	if name: name += ' '
+	value = value.split('\n')
+	base_indent = '   '*indent
+	val_indent = base_indent + ' '*len(name)
+	for i, l in enumerate(value):
+		if i == 0:
+			print(base_indent+name+l)
+		else:
+			print(val_indent+l)
+
+SIZE_UNITS = ('o', 'kio', 'Mio', 'Gio')
+
+def humanize_file_size(size):
+	size = float(int(size))
+	unit = 0
+	while size > 2048 and unit < 3:
+		size /= 1024
+		unit += 1
+	return str(round(size, 1))+' '+SIZE_UNITS[unit]
+
+LOCATION_TYPES = {
+	'https': 'INDEX_HTTPS_LOCATION',
+	'http': 'INDEX_HTTP_LOCATION',
+	'gdrive': 'INDEX_GOOGLE_DRIVE_LOCATION'
+}
+
+def type_name(typeid):
+	return _locale.TEXT[LOCATION_TYPES.get(typeid, 'INDEX_UNKNOWN_FIELD')]
 
 def parse_index(text):
 	parser = KRIParser(text)
@@ -124,8 +198,30 @@ class KRIParser:
 
 def load_local_index(path):
 	with open(path, 'rt', encoding='utf-8') as fd:
-		content = fd.read()
-	return content
+		content = fd.readlines()
+	return '\n'.join([line.strip() for line in content])
+
+def load_remote_index(link, usecache=True):
+	cache = _cachedir.user_cache_path(link+'{0.year:04}{0.month:02}{0.day:02}{0.hour:02}'.format(datetime.now()))
+	_clear_old_cache()
+	if usecache and os.path.isfile(cache):
+		with open(cache, 'rt', encoding='utf-8') as fd:
+			content = fd.readlines()
+	else:
+		r = requests.get(get_url(link))
+		r.raise_for_status()
+		with open(cache, 'wt+', encoding='utf-8') as fd:
+			fd.write(r.text)
+		content = r.text.split('\n')
+	return '\n'.join([line.strip() for line in content])
+
+def _clear_old_cache():
+	today = '{0.year:04}{0.month:02}{0.day:02}'.format(datetime.now())
+	cachedir = _cachedir.user_cache_path('')
+	for fname in os.listdir(cachedir):
+		date = fname[-10:-2]
+		if date != today:
+			os.remove(os.path.join(cachedir, fname))
 
 if __name__ == '__main__':
 	main()
