@@ -38,8 +38,9 @@ Utilisation :
 		'INDEX_MODULE_HELP': '''[Aide pour le module index]
 
 Utilisation :
-    kihara-index <lien>
+    kihara-index [no-cache] <lien>
         Récupérer et afficher les informations depuis un lien
+	no-cache force l'actualisation de l'index 
 
     kihara-index local <chemin>
         Afficher les informations d'un fichier local
@@ -95,12 +96,29 @@ Usage :
 		'INDEX_MODULE_HELP': '''[Help on the index module]
 
 Usage :
-    kihara-index <link>
+    kihara-index [no-cache] <link>
         Display infos from a link
+	no-cache forces the refresh of the index file
 
     kihara-index local <path>
         Display infos from a local file
 ''',
+		'INDEX_INFO': 'Resource informations :',
+		'INDEX_NAME':              'Name        :',
+		'INDEX_DESCRIPTION':       'Description :',
+		'INDEX_RESOURCE_PROVIDER': 'Indexed by  :',
+		'INDEX_NO_RESOURCE': 'This index doesn\'t contain any resource',
+		'INDEX_UNKNOWN_FIELD': 'Unknown',
+		'INDEX_VERSION':         'Version {0}   :',
+		'INDEX_SIZE':              'File size   :',
+		'INDEX_LOCATION':        'Location {0}  :',
+		'INDEX_TYPE':              'Type        :',
+		'INDEX_LOCATION_PROVIDER': 'Provided by :',
+		'INDEX_DATE':              'Uploaded on :',
+		'INDEX_HTTPS_LOCATION': 'generic HTTPS',
+		'INDEX_HTTP_LOCATION': 'generic HTTP',
+		'INDEX_GOOGLE_DRIVE_LOCATION': 'Google Drive',
+		'INDEX_FRAGMENT':        'Fragment {0}  :',
 	}
 
 del locale, userlocale
