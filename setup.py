@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as fh:
 
 setuptools.setup(
     name='kihara',
-    version='1.0.0',
+    version='0.1.0',
 
     author='Louis DEVIE',
     author_email='louisdevie.contact@gmail.com',
