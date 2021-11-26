@@ -4,6 +4,7 @@ from .version import REPR
 from . import utils
 
 PROTOCOLS = utils.TwoWayMap(
+	('',      b'\x00'), # 000
 	('http',  b'\x20'), # 001
 	('https', b'\xa0'), # 101
 	('ftp',   b'\x00'), # 000
@@ -59,12 +60,11 @@ def _help_msg():
 
 def make_link(url):
 	if url.count(PROTOCOL_SEPARATOR) == 0:
-		raise ValueError(_locale.INVALID_URL)
-
-	protocol, location = url.split(PROTOCOL_SEPARATOR, 1)
-
-	if not protocol in PROTOCOLS.left:
-		raise ValueError(_locale.INVALID_URL)
+		protocol = ''
+	else:
+		protocol, location = url.split(PROTOCOL_SEPARATOR, 1)
+		if not protocol in PROTOCOLS.left:
+			protocol = ''
 
 	encoder = KLinkEncoder()
 
