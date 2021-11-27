@@ -27,40 +27,41 @@ Outils :
 		'LINK_MODULE_HELP': '''[Aide pour le module link]
 
 Utilisation :
-    kihara-link get-url <lien>
+    kihara-link geturl <lien>
         Pour extraire l'URL d'un lien
 
-    kihara-link make-link <url>
+    kihara-link makelink <url>
         Pour créer un lien depuis une URL
 ''',
-		'INVALID_URL': 'URL non valide',
+		'INVALID_URL': 'uniquement des caractères imprimables ascii sont autorisés',
 		'INVALID_LINK': 'lien non valide',
 		'INDEX_MODULE_HELP': '''[Aide pour le module index]
 
 Utilisation :
-    kihara-index [no-cache] <lien>
+    kihara-index [nocache] <lien>
         Récupérer et afficher les informations depuis un lien
 	no-cache force l'actualisation de l'index 
 
     kihara-index local <chemin>
         Afficher les informations d'un fichier local
 ''',
+		'LOCAL_INDEX': 'Fichier d\'indexage local {0}',
+		'REMOTE_INDEX': 'Fichier d\'indexage distant {0}',
 		'INDEX_INFO': 'Informations sur la ressource :',
-		'INDEX_NAME':              'Nom           :',
-		'INDEX_DESCRIPTION':       'Description   :',
-		'INDEX_RESOURCE_PROVIDER': 'Indexé par    :',
+		'INDEX_NAME': 'Nom :',
+		'INDEX_DESCRIPTION': 'Description :',
+		'INDEX_RESOURCE_PROVIDER': 'Indexé par :',
 		'INDEX_NO_RESOURCE': 'Cet index ne contient pas de ressource',
 		'INDEX_UNKNOWN_FIELD': 'Inconnu',
-		'INDEX_VERSION':         'Version {0}     :',
-		'INDEX_SIZE':              'Taille        :',
-		'INDEX_LOCATION':        'Emplacement {0} :',
-		'INDEX_TYPE':              'Type          :',
-		'INDEX_LOCATION_PROVIDER': 'Fourni par    :',
-		'INDEX_DATE':              'Mise en ligne :',
+		'INDEX_VERSION': 'Version {0} :',
+		'INDEX_SIZE': 'Taille :',
+		'INDEX_FRAGMENT': 'Fragment {0} :',
+		'INDEX_TYPE': 'Type :',
+		'INDEX_LOCATION_PROVIDER': 'Mis en ligne par :',
 		'INDEX_HTTPS_LOCATION': 'HTTPS générique',
 		'INDEX_HTTP_LOCATION': 'HTTP générique',
 		'INDEX_GOOGLE_DRIVE_LOCATION': 'Google Drive',
-		'INDEX_FRAGMENT':        'Fragment {0}    :',
+		'INDEX_LOCATION': 'Emplacement :',
 	}
 else:
 	TEXT = {
@@ -85,13 +86,13 @@ Tools :
 		'LINK_MODULE_HELP': '''[Help on the link module]
 
 Usage :
-    kihara-link get-url <link>
+    kihara-link geturl <link>
         Extract the URL from a link
 
-    kihara-link make-link <url>
+    kihara-link makelink <url>
         Create a link from an URL
 ''',
-		'INVALID_URL': 'not a valid URL',
+		'INVALID_URL': 'only printable ascii characters are valid',
 		'INVALID_LINK': 'not a valid link',
 		'INDEX_MODULE_HELP': '''[Help on the index module]
 
@@ -103,22 +104,23 @@ Usage :
     kihara-index local <path>
         Display infos from a local file
 ''',
+		'LOCAL_INDEX': 'Local indexing file {0}',
+		'REMOTE_INDEX': 'Remote indexing file {0}',
 		'INDEX_INFO': 'Resource informations :',
-		'INDEX_NAME':              'Name        :',
-		'INDEX_DESCRIPTION':       'Description :',
-		'INDEX_RESOURCE_PROVIDER': 'Indexed by  :',
+		'INDEX_NAME': 'Name :',
+		'INDEX_DESCRIPTION': 'Description :',
+		'INDEX_RESOURCE_PROVIDER': 'Indexed by :',
 		'INDEX_NO_RESOURCE': 'This index doesn\'t contain any resource',
 		'INDEX_UNKNOWN_FIELD': 'Unknown',
-		'INDEX_VERSION':         'Version {0}   :',
-		'INDEX_SIZE':              'File size   :',
-		'INDEX_LOCATION':        'Location {0}  :',
-		'INDEX_TYPE':              'Type        :',
-		'INDEX_LOCATION_PROVIDER': 'Provided by :',
-		'INDEX_DATE':              'Uploaded on :',
+		'INDEX_VERSION': 'Version {0} :',
+		'INDEX_SIZE': 'File size :',
+		'INDEX_FRAGMENT': 'Fragment {0} :',
+		'INDEX_TYPE': 'Type :',
+		'INDEX_LOCATION_PROVIDER': 'Uploaded by :',
 		'INDEX_HTTPS_LOCATION': 'generic HTTPS',
 		'INDEX_HTTP_LOCATION': 'generic HTTP',
 		'INDEX_GOOGLE_DRIVE_LOCATION': 'Google Drive',
-		'INDEX_FRAGMENT':        'Fragment {0}  :',
+		'INDEX_LOCATION': 'Location :',
 	}
 
 del locale, userlocale

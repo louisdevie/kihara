@@ -1,4 +1,7 @@
 def trim_quotes(arg):
+	'''
+	trim quotes in command-line arguments
+	'''
 	if arg.startswith('"') or arg.startswith("'"):
 		arg = arg[1:]
 	if arg.endswith('"') or arg.endswith("'"):

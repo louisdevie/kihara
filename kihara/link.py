@@ -1,4 +1,11 @@
-from sys import argv, stdout
+'''
+KLinks manipulation
+
+kLink is a compressed base64 encoding optimized for URLs.
+'''
+
+from sys import argv
+
 from . import _locale
 from .version import REPR
 from . import utils
@@ -22,7 +29,7 @@ BASE64_TABLE = [
 	'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
 	'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
 	'w', 'x', 'y', 'z', '0', '1', '2', '3',
-	'4', '5', '6', '7', '8', '9', '+', '=',
+	'4', '5', '6', '7', '8', '9', '+', '_',
 ]
 
 PADDING_FLAG_CHAR = '!'
@@ -45,10 +52,10 @@ KIHARA_LINK_CODE = [
 def main():
 	argc = len(argv)
 	if argc == 3:
-		if argv[1] == 'get-url':
-			stdout.write(get_url(utils.trim_quotes(argv[2]))+'\n')
-		elif argv[1] == 'make-link':
-			stdout.write(make_link(utils.trim_quotes(argv[2]))+'\n')
+		if argv[1] == 'geturl':
+			print(get_url(utils.trim_quotes(argv[2])))
+		elif argv[1] == 'makelink':
+			print(make_link(utils.trim_quotes(argv[2])))
 		else:
 			_help_msg()
 	else:
@@ -59,6 +66,12 @@ def _help_msg():
 	print(_locale.LINK_MODULE_HELP)
 
 def make_link(url):
+	'''
+	Create a kLink from the given URL.
+
+	The URL can be anything composed of printable ascii charaters.
+	(for example, 'https://awebsite.com' and  'Hello, World!' are both valid)
+	'''
 	if url.count(PROTOCOL_SEPARATOR) == 0:
 		protocol = ''
 		location = url
@@ -97,6 +110,9 @@ def make_link(url):
 	return encoder.read()
 
 def get_url(link):
+	'''
+	extract the URL from a kLink.
+	'''
 	if link.endswith(PADDING_FLAG_CHAR):
 		padded = False
 		link = link[:-1]

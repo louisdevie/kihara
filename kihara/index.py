@@ -1,7 +1,7 @@
 import re
 import requests
 import os
-from sys import argv, stdout
+from sys import argv
 from datetime import datetime
 
 from . import _locale
@@ -12,18 +12,26 @@ from .link import get_url
 
 class KRIParsingError (SyntaxError): pass
 
-KRI_BRANCH_TAG = re.compile(r'(\?)(resource|version|location)(\[)')
-KRI_LEAF_TAG = re.compile(r'(!)(name|size|date|type|description|provider|fragment)(\[)')
+KRI_BRANCH_TAG = re.compile(r'(\?)(resource|version|fragment)(\[)')
+KRI_LEAF_TAG = re.compile(r'(!)(name|size|type|description|provider|location)(\[)')
 
 def main():
 	argc = len(argv)
 	if argc == 2:
-		display_index(parse_index(load_remote_index(argv[1])))
+		link = utils.trim_quotes(argv[1])
+		url = get_url(link)
+		print(_locale.REMOTE_INDEX.format(url))
+		display_index(parse_index(load_remote_index(url, link)))
 	elif argc == 3:
 		if argv[1] == 'local':
-			display_index(parse_index(load_local_index(argv[2])))
-		elif argv[21] == 'no-cache':
-			display_index(parse_index(load_remote_index(argv[2], False)))
+			path = utils.trim_quotes(argv[2])
+			print(_locale.LOCAL_INDEX.format(path))
+			display_index(parse_index(load_local_index(path)))
+		elif argv[21] == 'nocache':
+			link = utils.trim_quotes(argv[2])
+			url = get_url(link)
+			print(_locale.REMOTE_INDEX.format(url))
+			display_index(parse_index(load_remote_index(url, link, False)))
 		else:
 			_help_msg()
 	else:
@@ -62,25 +70,21 @@ def display_index(index_data):
 			ver.get('description', [_locale.INDEX_UNKNOWN_FIELD])[0],
 			_locale.INDEX_DESCRIPTION, 2)
 		printfield(
+			res.get('provider', [_locale.INDEX_UNKNOWN_FIELD])[0],
+			_locale.INDEX_LOCATION_PROVIDER, 2)
+		printfield(
 			humanize_file_size(ver.get('size', [_locale.INDEX_UNKNOWN_FIELD])[0]),
 			_locale.INDEX_SIZE, 2)
-		for i, loc in enumerate(ver.get('location', [])):
+		for i, frag in enumerate(ver.get('fragment', [])):
 			printfield(
 				'',
-				_locale.INDEX_LOCATION.format(i+1), 2)
+				_locale.INDEX_FRAGMENT.format(i+1), 2)
 			printfield(
-				type_name(loc.get('type', [_locale.INDEX_UNKNOWN_FIELD])[0]),
+				type_name(frag.get('type', [_locale.INDEX_UNKNOWN_FIELD])[0]),
 				_locale.INDEX_TYPE, 3)
 			printfield(
-				res.get('provider', [_locale.INDEX_UNKNOWN_FIELD])[0],
-				_locale.INDEX_LOCATION_PROVIDER, 3)
-			printfield(
-				loc.get('date', [_locale.INDEX_UNKNOWN_FIELD])[0],
-				_locale.INDEX_DATE, 3)
-			for i, frag in enumerate(loc.get('fragment', [])):
-				printfield(
-					frag,
-					_locale.INDEX_FRAGMENT.format(i+1), 3)
+				frag.get('location', [_locale.INDEX_UNKNOWN_FIELD])[0],
+				_locale.INDEX_LOCATION, 3)
 
 def printfield(value, name='', indent=1):
 	if name: name += ' '
@@ -201,14 +205,14 @@ def load_local_index(path):
 		content = fd.readlines()
 	return '\n'.join([line.strip() for line in content])
 
-def load_remote_index(link, usecache=True):
+def load_remote_index(url, link, usecache=True):
 	cache = _cachedir.user_cache_path(link+'{0.year:04}{0.month:02}{0.day:02}{0.hour:02}'.format(datetime.now()))
 	_clear_old_cache()
 	if usecache and os.path.isfile(cache):
 		with open(cache, 'rt', encoding='utf-8') as fd:
 			content = fd.readlines()
 	else:
-		r = requests.get(get_url(link))
+		r = requests.get(url)
 		r.raise_for_status()
 		with open(cache, 'wt+', encoding='utf-8') as fd:
 			fd.write(r.text)
@@ -222,6 +226,17 @@ def _clear_old_cache():
 		date = fname[-10:-2]
 		if date != today:
 			os.remove(os.path.join(cachedir, fname))
+
+def generate_code(index_data):
+	text = str()
+	for tag, data in index_data.items():
+		if isinstance(data[0], str):
+			for value in data:
+				text += '!' + tag + '[' + value + ']'
+		else:
+			for value in data:
+				text += '?' + tag + '[' + generate_code(value) + ']'
+	return text
 
 if __name__ == '__main__':
 	main()
