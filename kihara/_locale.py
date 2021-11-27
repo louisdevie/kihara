@@ -12,11 +12,11 @@ Outils :
     kihara-download (ou python3 -m kihara.download)
         Télécharger des fichiers distants
 
-    kihara-hide (ou python3 -m kihara.hide)
-        Cacher des fichiers
+    kihara-pack (ou python3 -m kihara.pack)
+        Convertir des fichiers au format kihara
 
     kihara-extract (ou python3 -m kihara.extract)
-        Restaurer des fichiers chachés
+        Restaurer des fichiers emballés
 
     kihara-index (ou python3 -m kihara.index)
         Afficher le contenu de fichiers d'indexage (.kri)
@@ -62,6 +62,17 @@ Utilisation :
 		'INDEX_HTTP_LOCATION': 'HTTP générique',
 		'INDEX_GOOGLE_DRIVE_LOCATION': 'Google Drive',
 		'INDEX_LOCATION': 'Emplacement :',
+		'PACK_MODULE_HELP': '''[Aide pour le module pack]
+
+Utilisation :
+    kihara-pack <format> [<séparation>] <fichier>
+        Emballe un fichier.
+        Formats disponibles :
+        - raw (le fichier est emballé tel quel)
+        La séparation est la taille (un nombre entier, en Mio) des morceaux.
+        Si elle n'est pas indiquée, le fichier sera emballé en un seul morceau.
+        Pour emballer plusieurs fichiers ensemble, il faut les archiver et emballer l'archive.
+''',
 	}
 else:
 	TEXT = {
@@ -71,11 +82,11 @@ Tools :
     kihara-download (or python3 -m kihara.download)
         Download remote files
 
-    kihara-hide (or python3 -m kihara.hide)
-        Hide files
+    kihara-pack (or python3 -m kihara.pack)
+        Convert files to kihara format
 
     kihara-extract (or python3 -m kihara.extract)
-        Recover hidden files
+        Recover packed files
 
     kihara-index (or python3 -m kihara.index)
         Display indexing files (.kri) data
@@ -121,6 +132,17 @@ Usage :
 		'INDEX_HTTP_LOCATION': 'generic HTTP',
 		'INDEX_GOOGLE_DRIVE_LOCATION': 'Google Drive',
 		'INDEX_LOCATION': 'Location :',
+		'PACK_MODULE_HELP': '''[Help on the pack module]
+
+Usage :
+    kihara-pack <format> [<chunk-size>] <file>
+        Pack a file.
+        Available output formats :
+        - raw (the file is packed as is)
+        chunk-size is the size (as an integer, in MiB) of chunks.
+        If ommited, the file will be packed in one chunk.
+        In order to pack multiple files together, you need to archive them and then pack the archive.
+''',
 	}
 
 del locale, userlocale
