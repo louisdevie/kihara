@@ -4,7 +4,7 @@ from .version import REPR
 from . import utils
 
 PROTOCOLS = utils.TwoWayMap(
-	('',      b'\x00'), # 000
+	('',      b'\xe0'), # 111
 	('http',  b'\x20'), # 001
 	('https', b'\xa0'), # 101
 	('ftp',   b'\x00'), # 000
@@ -61,10 +61,12 @@ def _help_msg():
 def make_link(url):
 	if url.count(PROTOCOL_SEPARATOR) == 0:
 		protocol = ''
+		location = url
 	else:
 		protocol, location = url.split(PROTOCOL_SEPARATOR, 1)
 		if not protocol in PROTOCOLS.left:
 			protocol = ''
+			location = url
 
 	encoder = KLinkEncoder()
 
@@ -117,7 +119,9 @@ def get_url(link):
 			
 	protocol = bytes(decoder.read(1), 'latin-1')
 
-	if protocol in PROTOCOLS.right:
+	if protocol == b'\xe0':
+		return decoder.read()
+	elif protocol in PROTOCOLS.right:
 		return PROTOCOL_SEPARATOR.join((PROTOCOLS.right[protocol], decoder.read()))
 	else:
 		raise ValueError(_locale.INVALID_LINK)
@@ -128,7 +132,7 @@ class KLinkBaseCoDec:
 		self.inputbuffer = 0
 
 	def _write_bit(self, bit):
-		pass
+		raise NotImplementedError
 
 	def write(self, data, stop):
 		written = 0
