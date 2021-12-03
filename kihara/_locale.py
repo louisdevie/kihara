@@ -73,6 +73,7 @@ Utilisation :
         Si elle n'est pas indiquée, le fichier sera emballé en un seul morceau.
         Pour emballer plusieurs fichiers ensemble, il faut les archiver et emballer l'archive.
 ''',
+		'FILENAME_CHARS_WARNING': 'Le nom du fichier contient des caractères qui risquent de se faire remplacer par "_" sur certains systèmes.'
 	}
 else:
 	TEXT = {
@@ -143,6 +144,7 @@ Usage :
         If ommited, the file will be packed in one chunk.
         In order to pack multiple files together, you need to archive them and then pack the archive.
 ''',
+		'FILENAME_CHARS_WARNING': 'The filename contains characters that may be replaced by "_" on some systems.'
 	}
 
 del locale, userlocale
