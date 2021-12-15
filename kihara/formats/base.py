@@ -1,10 +1,13 @@
-import functools, random
+import functools, random, os, hashlib
+from .. import _locale 
 
 __all__ = [
-	'randbytes', 'functools'
+	'functools', 'os', 'generate_UID', 'encode_filename', 'hashlib', 'CHUNK_SIZE'
 ]
 
 SAFE_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-.'
+
+CHUNK_SIZE = 131_072 # 128 kiB
 
 def randbytes(n):
 	return bytes([random.randint(0, 255) for i in range(n)])
@@ -23,7 +26,7 @@ def encode_filename(filename):
 				warn = True
 			char = char.encode('utf-8')
 		else:
-			break
+			char = b'\x00'
 		if len(encoded)+len(char) > 42:
 			overflow = True
 			break
