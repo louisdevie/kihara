@@ -97,15 +97,13 @@ def printfield(value, name='', indent=1):
 		else:
 			print(val_indent+l)
 
-SIZE_UNITS = ('o', 'kio', 'Mio', 'Gio')
-
 def humanize_file_size(size):
 	size = float(int(size))
 	unit = 0
 	while size > 2048 and unit < 3:
 		size /= 1024
 		unit += 1
-	return str(round(size, 1))+' '+SIZE_UNITS[unit]
+	return str(round(size, 1))+' '+_locale.SIZE_UNITS[unit]
 
 LOCATION_TYPES = {
 	'https': 'INDEX_HTTPS_LOCATION',
