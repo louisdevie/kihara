@@ -4,3 +4,4 @@
 build
 dist
 pypi*
+*.sublime-workspace

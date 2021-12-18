@@ -1,0 +1,23 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "Project root",
+			"folder_exclude_patterns": [
+				"*",
+			],
+		},{
+			"path": "kihara",
+			"name": "Source code",
+			"folder_exclude_patterns": [
+				"__pycache__",
+			],
+		},{
+			"path": "dist/",
+			"name": "Distributions",
+			"folder_exclude_patterns": [
+				"*",
+			],
+		},
+	],
+}

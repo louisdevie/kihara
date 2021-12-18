@@ -22,4 +22,4 @@ def pack_raw(chunksize, filepath):
 		fdout.write(checksum.digest()[:8])
 
 if __name__ == '__main__':
-	pack_raw(-1, 'C:\\Users\\ld306219\\Desktop\\exemple.txt')
+	pack_raw(-1, 'exemple.txt')
